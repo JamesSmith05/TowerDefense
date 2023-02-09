@@ -14,7 +14,7 @@ public class UserAccess {
 
     public void run() {
         ImageIcon icon = new ImageIcon("pong_icon_smaller.png"); // this is the smaller pong icon, smaller because it is displayed on JOptionpane
-        String[] responses = {"Log In", "Sign Up"};
+        String[] responses = {"Log In", "Sign Up","Guest"};
 
         int loginWindow = JOptionPane.showOptionDialog(
                 null,
@@ -32,6 +32,9 @@ public class UserAccess {
         }
         if (loginWindow == 1) { // if user chose "Sign up"
             signUp();
+        }
+        if (loginWindow == 2) { // if user chose "Sign up"
+            guestLogin();
         }
     }
 
@@ -121,6 +124,12 @@ public class UserAccess {
             } else {
                 JOptionPane.showMessageDialog(null, "Passwords are not the same", "Sign Up", JOptionPane.WARNING_MESSAGE);
             }
+        }
+    }
+
+    private void guestLogin(){
+        if (db.loginUser("guest", "f5sd61f64sdfd65f16sd4f89d5f16d54f61vb516b6g65f1g")) {
+            loadGame("guest");
         }
     }
 

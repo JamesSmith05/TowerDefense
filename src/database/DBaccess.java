@@ -18,10 +18,12 @@ public class DBaccess{
 
     private Statement getSqlStatement() throws SQLException {
 
+        //if there is no connection then it establishes a connection
         if (dbConnection == null) {
             dbConnection = DriverManager.getConnection(dbConnectionUrl, "", ""); // connects to db
         }
 
+        //returns the result of the ran statement
         return dbConnection.createStatement();
     }
 
@@ -39,6 +41,7 @@ public class DBaccess{
     }
 
     private Integer executeUpdateSqlReturnKey(String sqlQuery) {
+        //executes sql query and return the randomly generated key
         int key = -1;
 
         try {
@@ -58,6 +61,7 @@ public class DBaccess{
     }
 
     public ArrayList<Integer> gamesForUsername(String username){
+        //return a list of saved games that are associated with the user that has signed in
         ArrayList<Integer> tempArray = new ArrayList<>();
 
         String sqlQuery = "SELECT GameID, Username from Game";
@@ -86,6 +90,7 @@ public class DBaccess{
 
         int gameID;
 
+        //load information about the game from database
         try {
 
             Statement stmt = getSqlStatement();
@@ -105,9 +110,10 @@ public class DBaccess{
             e.printStackTrace();
         }
 
-
         sqlQuery = "SELECT GameID, TowerID from GameTowerRelation";
         int towerID;
+
+        //load information about the towers linked with the loaded game from database
         try {
 
             Statement stmt = getSqlStatement();
@@ -134,6 +140,8 @@ public class DBaccess{
         int towerID, xCoord,yCoord,elementID,towerWorth;
         boolean u1A,u1B,u1C,u2A,u2B,u2C;
         String towerName;
+
+        //Load all information about towers that is to be loaded
         try {
             Statement stmt = getSqlStatement();
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -164,7 +172,7 @@ public class DBaccess{
 
 
     public String returnGameInfo (int gameToDisplay){
-
+        //Used by the UI to draw game info on the game loading screen
         String sqlQuery = "SELECT * FROM Game";
 
         String result = "blank";
@@ -189,24 +197,22 @@ public class DBaccess{
     }
 
     public void saveLoadedGame (GamePanel gp){
-
-        String sqlQuery = String.format("UPDATE Game SET Cash = '%s' WHERE GameID = '%s'", gp.userCurrency,gp.loadedGameID);
+        //updates game info in database
+        String sqlQuery = String.format("UPDATE Game SET Cash = '%s' AND Set Round = '%s' AND SET Lives = '%s' WHERE GameID = '%s'", gp.userCurrency,gp.waveNum,gp.userLife,gp.loadedGameID);
         executeUpdateSql(sqlQuery);
-        sqlQuery = String.format("UPDATE Game SET Round = '%s'  WHERE GameID = '%s'",gp.waveNum,gp.loadedGameID);
-        executeUpdateSql(sqlQuery);
-        sqlQuery = String.format("UPDATE Game SET Lives = '%s' WHERE GameID = '%s'",gp.userLife,gp.loadedGameID);
-        executeUpdateSql(sqlQuery);
-
 
         int gameID;
 
         sqlQuery = "SELECT GameID, TowerID from GameTowerRelation";
         int towerID;
+
+
         try {
 
             Statement stmt = getSqlStatement();
             ResultSet rs = stmt.executeQuery(sqlQuery);
 
+            //deletes all towers associated with current game from database
             while (rs.next()) {
                 gameID = rs.getInt("GameID");
                 towerID = rs.getInt("TowerID");
@@ -224,12 +230,10 @@ public class DBaccess{
 
         int generatedTowerKey;
 
+        //adds all towers currently in the game to database
         for (int i = 0; i < gp.tower.length; i++) {
             if (gp.tower[i] != null){
-                sqlQuery = String.format("INSERT INTO Tower (TowerName, xCoord, yCoord, ElementID, Upgrade1A, Upgrade1B, Upgrade1C, Upgrade2A, Upgrade2B, Upgrade2C, TowerWorth) " +
-                                "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", gp.tower[i].name,gp.tower[i].worldX,gp.tower[i].worldY,1
-                        , gp.tower[i].upgrade1A, gp.tower[i].upgrade1B, gp.tower[i].upgrade1C, gp.tower[i].upgrade2A, gp.tower[i].upgrade2B, gp.tower[i].upgrade2C, gp.tower[i].towerWorth);
-                generatedTowerKey = executeUpdateSqlReturnKey(sqlQuery);
+                generatedTowerKey = insertTowerReturnKey(gp, i);
 
                 sqlQuery = String.format("INSERT INTO GameTowerRelation (GameID, TowerID) VALUES ('%s','%s')",gp.loadedGameID,generatedTowerKey);
                 executeUpdateSql(sqlQuery);
@@ -238,8 +242,19 @@ public class DBaccess{
         }
     }
 
-    public void saveNewGame(String username, GamePanel gp){
+    private int insertTowerReturnKey(GamePanel gp, int i) {
+        //adds tower to tower table and returns generated key to be used in the relation table
+        String sqlQuery;
+        int generatedTowerKey;
+        sqlQuery = String.format("INSERT INTO Tower (TowerName, xCoord, yCoord, ElementID, Upgrade1A, Upgrade1B, Upgrade1C, Upgrade2A, Upgrade2B, Upgrade2C, TowerWorth) " +
+                        "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", gp.tower[i].name,gp.tower[i].worldX,gp.tower[i].worldY,1
+                , gp.tower[i].upgrade1A, gp.tower[i].upgrade1B, gp.tower[i].upgrade1C, gp.tower[i].upgrade2A, gp.tower[i].upgrade2B, gp.tower[i].upgrade2C, gp.tower[i].towerWorth);
+        generatedTowerKey = executeUpdateSqlReturnKey(sqlQuery);
+        return generatedTowerKey;
+    }
 
+    public void saveNewGame(String username, GamePanel gp){
+        //insert into database the game info
         String sqlQuery = String.format("INSERT INTO Game (Username, Cash, Round, Lives, MapID) VALUES ('%s', '%s', '%s', '%s', '%s')", username,gp.userCurrency,gp.waveNum,gp.userLife,gp.mapID);
 
         int generatedGameKey = executeUpdateSqlReturnKey(sqlQuery);
@@ -250,10 +265,7 @@ public class DBaccess{
 
         for (int i = 0; i < gp.tower.length; i++) {
             if (gp.tower[i] != null){
-                sqlQuery = String.format("INSERT INTO Tower (TowerName, xCoord, yCoord, ElementID, Upgrade1A, Upgrade1B, Upgrade1C, Upgrade2A, Upgrade2B, Upgrade2C, TowerWorth) " +
-                        "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", gp.tower[i].name,gp.tower[i].worldX,gp.tower[i].worldY,1
-                        , gp.tower[i].upgrade1A, gp.tower[i].upgrade1B, gp.tower[i].upgrade1C, gp.tower[i].upgrade2A, gp.tower[i].upgrade2B, gp.tower[i].upgrade2C, gp.tower[i].towerWorth);
-                generatedTowerKey = executeUpdateSqlReturnKey(sqlQuery);
+                generatedTowerKey = insertTowerReturnKey(gp, i);
 
                 sqlQuery = String.format("INSERT INTO GameTowerRelation (GameID, TowerID) VALUES ('%s','%s')",generatedGameKey,generatedTowerKey);
                 executeUpdateSql(sqlQuery);

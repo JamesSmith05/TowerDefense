@@ -119,6 +119,7 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
 
         this.username = username;
 
+        //setup Jframe
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
@@ -164,10 +165,12 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
     }
 
     public void updateTowerElements(){
+        //updates location of the 3 buttons used for tower elements so that they appear above the selected tower
         int updateX = tower[interactTowerIndex].worldX + tileSize/4;
         int updateY = tower[interactTowerIndex].worldY - 3*tileSize/4;
         elementButton1.updateLocation(updateX, updateY);
         updateY += tileSize/8;
+        //if tower is to close to the left shift on button to the right so that they are all accessible
         if(tower[interactTowerIndex].worldX < (3*tileSize/4)){
             updateX += 3*tileSize/4;
             elementButton2.updateLocation(updateX, updateY);
@@ -175,13 +178,16 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
             updateY += 3*tileSize/4;
             elementButton3.updateLocation(updateX, updateY);
         }
+        //if tower is to close to the right shift on button to the left so that they are all accessible
         else if(tower[interactTowerIndex].worldX > (screenWidth - 4.5*tileSize)){
             updateX -= 3*tileSize/4;
             elementButton2.updateLocation(updateX, updateY);
             updateX -= tileSize/8;
             updateY += 3*tileSize/4;
             elementButton3.updateLocation(updateX, updateY);
-        }else{
+        }
+        //otherwise the buttons are above the tower as normal
+        else{
             updateX += 3*tileSize/4;
             updateY += tileSize/8;
             elementButton2.updateLocation(updateX, updateY);
@@ -217,6 +223,7 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
     }
 
     public void setupGame(){
+        //reset all game variables and arrays and send user to title screen
         resetEntities();
         aSetter.resetMobCounter();
         aSetter.resetTowerCounter();
@@ -282,12 +289,31 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
 
     }
 
-    public void loadGameSave(int gameToLoad){
+    public void loadGameSave(int gameToLoad){ //load a game
         dba.loadGameData(gameToLoad,this);
+    }
+
+    public void checkForTowerOverflow(){
+        //since the array has a limited size the game can be crashed by repeatedly placing and deleting towers to reach the array limit of 100 when new towers are added as the adding uses an incremental value.
+        //This takes all non-null towers and rearranges them to the lowest possible values in the array and resets the incremental value to the new smallest null array slot when it gets close to the limit as to not reduce performance
+        if(aSetter.j >=80){
+            int value = 0;
+            for (int i = 0; i < tower.length; i++) {
+                if(tower[i] != null){
+                    tower[value] = tower[i];
+                    value++;
+                }
+            }
+            for (int i = value; i < tower.length; i++) {
+                tower[i] = null;
+            }
+            aSetter.j = value;
+        }
     }
 
     public void update() {
 
+        //get information bout the frame and its location
         frame = (JFrame) SwingUtilities.getWindowAncestor(this);
 
         int tempX = frame.getLocation().x;
@@ -298,6 +324,7 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
 //        mouseX = tempMouseX - tempX - 10;  //these values are used for a 4k monitor
 //        mouseY = tempMouseY - tempY - 45;  //these values are used for a 4k monitor
 
+        //to try and put the coordinates to the tip of the mouse button
         mouseX = tempMouseX - tempX -5;
         mouseY = tempMouseY - tempY - 22;
 
@@ -323,6 +350,7 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
                     if (!cChecker.checkMouseTile((mouseX - (tileSize / 2)), (mouseY - (tileSize / 2)), mouseSolidArea)){
                         if(!cChecker.checkEntityMouse((mouseX - (tileSize / 2)), (mouseY - (tileSize / 2)), mouseSolidArea, tower, false)){
                             aSetter.setTower((mouseX - (tileSize/2)),(mouseY - (tileSize/2)), selectedTowerIndex);
+                            checkForTowerOverflow();
                             selectedTowerIndex = 50;
                         }
                     }

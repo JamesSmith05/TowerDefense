@@ -49,6 +49,7 @@ public class AssetSetter {
         gp.tower[j].upgrade2A = d;
         gp.tower[j].upgrade2B = e;
         gp.tower[j].upgrade2C = f;
+        gp.tower[j].elementID = elementID;
         gp.tower[j].towerWorth = towerWorth;
         j++;
     }
@@ -93,6 +94,15 @@ public class AssetSetter {
 
         int waveNum = gp.waveNum;
 
+        waveStatBoost(waveNum);
+
+        gp.monster[enemyId].worldX = x;
+        gp.monster[enemyId].worldY = y;
+
+        enemyId++;
+    }
+
+    private void waveStatBoost(int waveNum) {
         if(3 < waveNum && waveNum <=6){
             gp.monster[enemyId].originalSpeed +=1;
             gp.monster[enemyId].speed = gp.monster[enemyId].originalSpeed;
@@ -117,11 +127,6 @@ public class AssetSetter {
             gp.monster[enemyId].maxLife += (waveNum*2);
             gp.monster[enemyId].life = gp.monster[enemyId].maxLife;
         }
-
-        gp.monster[enemyId].worldX = x;
-        gp.monster[enemyId].worldY = y;
-
-        enemyId++;
     }
 
     public void setEnemy(int waveNum){
@@ -143,30 +148,7 @@ public class AssetSetter {
             gp.monster[enemyId] = new MON_GreenSlime(gp);
         }
 
-        if(3 < waveNum && waveNum <=6){
-            gp.monster[enemyId].originalSpeed +=1;
-            gp.monster[enemyId].speed = gp.monster[enemyId].originalSpeed;
-            gp.monster[enemyId].maxLife +=2;
-            gp.monster[enemyId].life = gp.monster[enemyId].maxLife;
-        }
-        else if(6 < waveNum && waveNum <=8){
-            gp.monster[enemyId].originalSpeed +=1;
-            gp.monster[enemyId].speed = gp.monster[enemyId].originalSpeed;
-            gp.monster[enemyId].maxLife +=6;
-            gp.monster[enemyId].life = gp.monster[enemyId].maxLife;
-        }
-        else if(8 < waveNum && waveNum <=10){
-            gp.monster[enemyId].originalSpeed +=2;
-            gp.monster[enemyId].speed = gp.monster[enemyId].originalSpeed;
-            gp.monster[enemyId].maxLife +=12;
-            gp.monster[enemyId].life = gp.monster[enemyId].maxLife;
-        }
-        else if (waveNum > 10){
-            gp.monster[enemyId].originalSpeed +=2;
-            gp.monster[enemyId].speed = gp.monster[enemyId].originalSpeed;
-            gp.monster[enemyId].maxLife += (waveNum*2);
-            gp.monster[enemyId].life = gp.monster[enemyId].maxLife;
-        }
+        waveStatBoost(waveNum);
 
         gp.monster[enemyId].worldX = gp.tileSize*gp.startCol;
         gp.monster[enemyId].worldY = gp.tileSize*gp.startRow;

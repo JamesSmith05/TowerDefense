@@ -8,8 +8,8 @@ public class PathFinder {
 
     GamePanel gp;
     Node[][] node;
-    ArrayList<Node> openList = new ArrayList<>();
-    public ArrayList<Node> pathList = new ArrayList<>();
+    ArrayList<Node> openList = new ArrayList<>(); //list of available nodes
+    public ArrayList<Node> pathList = new ArrayList<>(); //store the final paths to be read backwards
     Node startNode, goalNode, currentNode;
     boolean goalReached = false;
     int step = 0;
@@ -22,12 +22,12 @@ public class PathFinder {
     //assign node to each tile
     public void instantiateNodes() {
 
-        node = new Node[gp.maxScreenCol][gp.maxScreenRow];
+        node = new Node[gp.maxScreenCol][gp.maxScreenRow]; //instantiate 2d array for setting up node map
 
         int col = 0;
         int row = 0;
 
-        while(col < gp.maxScreenCol && row < gp.maxScreenRow){
+        while(col < gp.maxScreenCol && row < gp.maxScreenRow){ // for loop for adding node to each tile of the map
             node[col][row] = new Node(col,row);
 
             col++;
@@ -80,7 +80,7 @@ public class PathFinder {
         while(col < gp.maxScreenCol && row < gp.maxScreenRow) {
 
             int tileNum = gp.tileM.mapTileNum[col][row];
-            if(gp.tileM.tile[tileNum].enemyCollision){
+            if(gp.tileM.tile[tileNum].enemyCollision){ //sets it so that monsters that use the pathfinding cannot travel over anything but path
                 node[col][row].solid = true;
             }
             // set cost
@@ -113,13 +113,14 @@ public class PathFinder {
     //pathfind
     public boolean search(){
 
-        while (!goalReached && step < 500){
+        while (!goalReached && step < 500){ // step <500 means that if there is no possible path the code doesn't crash and run forever
             int col = currentNode.col;
             int row = currentNode.row;
 
             currentNode.checked = true;
             openList.remove(currentNode);
 
+            //opens the nodes in the 4 cardinal directions if there are withing the bounds
             if(row - 1 >= 0){
                 openNode(node[col][row-1]);
             }
@@ -133,25 +134,25 @@ public class PathFinder {
                 openNode(node[col+1][row]);
             }
 
-            int bestNodeIndex = 0;
-            int bestNodefCost = 999;
+            int bestNodeIndex = 0; //set default values
+            int bestNodefCost = 999; //set default values
 
             for (int i = 0; i < openList.size(); i++) {
 
                 if(openList.get(i).fCost < bestNodefCost){
-                    bestNodeIndex = i;
+                    bestNodeIndex = i; // if new node is closer to goal then replace the best node index
                     bestNodefCost = openList.get(i).fCost;
                 }
                 else if(openList.get(i).fCost == bestNodefCost) {
-                    if (openList.get(i).gCost < openList.get(bestNodeIndex).gCost) {
-                        bestNodeIndex = i;
+                    if (openList.get(i).gCost < openList.get(bestNodeIndex).gCost) { //if the fCost is the same then check the gCost
+                        bestNodeIndex = i; //if gCost better replace index
                     }
                 }
             }
             if(openList.size() == 0){
                 break;
             }
-            currentNode = openList.get(bestNodeIndex);
+            currentNode = openList.get(bestNodeIndex); //set new current node to the closest found node
             if(currentNode == goalNode){
                 goalReached = true;
                 trackThePath();
@@ -166,7 +167,7 @@ public class PathFinder {
     public void openNode(Node node){
         if(!node.open && !node.checked && !node.solid){
             node.open = true;
-            node.parent = currentNode;
+            node.parent = currentNode; //set parent node to be used to track the path backwards
             openList.add(node);
         }
     }
@@ -176,8 +177,8 @@ public class PathFinder {
         Node current = goalNode;
         while (current != startNode){
 
-            pathList.add(0,current);
-            current = current.parent;
+            pathList.add(0,current); //adds current node and
+            current = current.parent; //regresses to its parent node essentially following the breadcrumb trail back to the start
         }
     }
 }
