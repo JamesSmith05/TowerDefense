@@ -17,15 +17,12 @@ public class UI {
     public Font cartoon, alagard;
     BufferedImage titleImage1,titleImage2,titleImage3,titleImage4,titleImage5,titleImage6,titleImage7,titleImage8,titleImage9;
     BufferedImage neutralElement, waterElement, fireElement, iceElement, earthElement, airElement, grassElement;
-    public boolean messageOn = false;
     public boolean drawElm = false;
     int titleCounter;
 
-    ArrayList<String> message = new ArrayList<>();
     ArrayList<Message> damageMessages = new ArrayList<>();
     ArrayList<Integer> messageCounter = new ArrayList<>();
 
-    public boolean gameFinished = false;
     public String currentDialogue = "";
     public int commandNum = 0;
 
@@ -58,11 +55,6 @@ public class UI {
         titleImage8 = setup("specialImages/waterfall8",gp.screenWidth,gp.screenHeight);
         titleImage9 = setup("specialImages/titleScreen02",gp.screenWidth,gp.screenHeight);
     }
-
-//    public void addMessage(String text){
-//        message.add(text);
-//        messageCounter.add(0);
-//    }
 
     void getElementImages(){
         neutralElement = setup("elements/neutral",gp.tileSize/2,gp.tileSize/2);
