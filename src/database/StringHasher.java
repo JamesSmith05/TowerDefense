@@ -10,7 +10,7 @@ public class StringHasher {
     public static String getHashValue(String text) {
         MessageDigest digest = null;
         try {
-            digest = MessageDigest.getInstance("SHA-256");
+            digest = MessageDigest.getInstance("SHA-256"); //type of hashing algorithm used
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -18,7 +18,7 @@ public class StringHasher {
         if (digest == null)
             return null;
         byte[] encodedHash = digest.digest(
-                text.getBytes(StandardCharsets.UTF_8));
+                text.getBytes(StandardCharsets.UTF_8)); //changes the provided sting into its byte value
         return bytesToHex(encodedHash);
     }
 

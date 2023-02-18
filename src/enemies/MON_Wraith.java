@@ -21,7 +21,7 @@ public class MON_Wraith extends Entity {
         maxLife = 12;
         life = maxLife;
         attack = 1;
-        defence = 0;
+        defence = 1;
         exp = 2;
         coin = 5;
 

@@ -13,7 +13,7 @@ public class UserAccess {
     } // asks user if they want to log in, sign up, or play as guest
 
     public void run() {
-        ImageIcon icon = new ImageIcon("pong_icon_smaller.png"); // this is the smaller pong icon, smaller because it is displayed on JOptionpane
+        ImageIcon icon = new ImageIcon("pfp.jpg");
         String[] responses = {"Log In", "Sign Up","Guest"};
 
         int loginWindow = JOptionPane.showOptionDialog(
@@ -33,7 +33,7 @@ public class UserAccess {
         if (loginWindow == 1) { // if user chose "Sign up"
             signUp();
         }
-        if (loginWindow == 2) { // if user chose "Sign up"
+        if (loginWindow == 2) { // if user chose "Guest"
             guestLogin();
         }
     }

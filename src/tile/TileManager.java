@@ -113,33 +113,33 @@ public class TileManager {
 
     public void loadMap(String filePath) {
         try {
-            InputStream is = getClass().getResourceAsStream(filePath);
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            InputStream is = getClass().getResourceAsStream(filePath); //input stream from the text file
+            BufferedReader br = new BufferedReader(new InputStreamReader(is)); //buffered reader for the input stream
 
             int col = 0, row = 0;
 
-            while (col < gp.maxScreenCol && row < gp.maxScreenRow) {
+            while (col < gp.maxScreenCol && row < gp.maxScreenRow) { //loops untill whole map has been added
 
-                String line = br.readLine();
+                String line = br.readLine(); //reads next line
 
-                while (col < gp.maxScreenCol) {
-                    String numbers[] = line.split(" ");
+                while (col < gp.maxScreenCol) { //loops until edge of screen is reached
+                    String numbers[] = line.split(" "); //splits up line String into array
 
-                    int num = Integer.parseInt(numbers[col]);
+                    int num = Integer.parseInt(numbers[col]); //gets the number corresponding to current column number
 
-                    mapTileNum[col][row] = num;
-                    if(tile[num].startTile){
+                    mapTileNum[col][row] = num; //assigns the number into the 2d Array
+                    if(tile[num].startTile){ //assigns start tile for the map
                         gp.startCol = col;
                         gp.startRow = row;
                     }
-                    if(tile[num].endTile){
+                    if(tile[num].endTile){ //assigns goal tile for the map
                         gp.goalCol = col;
                         gp.goalRow = row;
                     }
-                    col++;
+                    col++; //increments the column
 
                 }
-                if (col == gp.maxScreenCol) {
+                if (col == gp.maxScreenCol) { //once the edge is reached the column is reset and the row is incremented
                     col = 0;
                     row++;
                 }

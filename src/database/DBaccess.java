@@ -196,10 +196,10 @@ public class DBaccess{
 
     }
 
-    public void saveLoadedGame (GamePanel gp){
+    public void saveLoadedGame (GamePanel gp){ //code that will update the game table and replace the towers in the tower table
         //updates game info in database
-        String sqlQuery = String.format("UPDATE Game SET Cash = '%s' AND Set Round = '%s' AND SET Lives = '%s' WHERE GameID = '%s'", gp.userCurrency,gp.waveNum,gp.userLife,gp.loadedGameID);
-        executeUpdateSql(sqlQuery);
+        String sqlQuery = String.format("UPDATE Game SET Cash = '%s' AND Set Round = '%s' AND SET Lives = '%s' WHERE GameID = '%s'", gp.userCurrency,gp.waveNum,gp.userLife,gp.loadedGameID); //updates the cash round and lives for a specific gameID
+        executeUpdateSql(sqlQuery);//a try catch method that opens a statement runs the query and closes the statement
 
         int gameID;
 
@@ -212,14 +212,15 @@ public class DBaccess{
             Statement stmt = getSqlStatement();
             ResultSet rs = stmt.executeQuery(sqlQuery);
 
-            //deletes all towers associated with current game from database
+            //deletes all towers and their occurrences in the link table associated with current game from database
+            //it is important to delete and replace instead of trying to update, since it would be impossible to update the correct tower, as towers can be deleted from the game
             while (rs.next()) {
-                gameID = rs.getInt("GameID");
-                towerID = rs.getInt("TowerID");
-                if (gameID == gp.loadedGameID){
-                    sqlQuery = String.format("DELETE FROM GameTowerRelation WHERE TowerID = '%s'",towerID);
+                gameID = rs.getInt("GameID"); //gets the GameID of current row
+                towerID = rs.getInt("TowerID");//gets the TowerID of current row
+                if (gameID == gp.loadedGameID){ //checks if tower is associated with current game
+                    sqlQuery = String.format("DELETE FROM GameTowerRelation WHERE TowerID = '%s'",towerID); //deletes row
                     executeUpdateSql(sqlQuery);
-                    sqlQuery = String.format("DELETE FROM Tower WHERE TowerID = '%s'",towerID);
+                    sqlQuery = String.format("DELETE FROM Tower WHERE TowerID = '%s'",towerID); //deletes row
                     executeUpdateSql(sqlQuery);
                 }
             }
@@ -231,11 +232,11 @@ public class DBaccess{
         int generatedTowerKey;
 
         //adds all towers currently in the game to database
-        for (int i = 0; i < gp.tower.length; i++) {
-            if (gp.tower[i] != null){
-                generatedTowerKey = insertTowerReturnKey(gp, i);
+        for (int i = 0; i < gp.tower.length; i++) { //loops for length of array
+            if (gp.tower[i] != null){ //if the contents is not null (contains a tower)
+                generatedTowerKey = insertTowerReturnKey(gp, i); //adds all relevant tower information into the database as a new entry and returns the generated primary key
 
-                sqlQuery = String.format("INSERT INTO GameTowerRelation (GameID, TowerID) VALUES ('%s','%s')",gp.loadedGameID,generatedTowerKey);
+                sqlQuery = String.format("INSERT INTO GameTowerRelation (GameID, TowerID) VALUES ('%s','%s')",gp.loadedGameID,generatedTowerKey); //uses the returned primary key to link the tower to the current game
                 executeUpdateSql(sqlQuery);
 
             }

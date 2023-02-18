@@ -296,18 +296,18 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
     public void checkForTowerOverflow(){
         //since the array has a limited size the game can be crashed by repeatedly placing and deleting towers to reach the array limit of 100 when new towers are added as the adding uses an incremental value.
         //This takes all non-null towers and rearranges them to the lowest possible values in the array and resets the incremental value to the new smallest null array slot when it gets close to the limit as to not reduce performance
-        if(aSetter.j >=80){
+        if(aSetter.j >=80){ //triggers once the entry into the array is 80/100, it is not possible to fit 80 towers on the map so once this is triggered it will not be triggered again for a while
             int value = 0;
             for (int i = 0; i < tower.length; i++) {
-                if(tower[i] != null){
+                if(tower[i] != null){ //finds first not null entry in the tower array and moves it to the front and increments value
                     tower[value] = tower[i];
                     value++;
                 }
             }
-            for (int i = value; i < tower.length; i++) {
+            for (int i = value; i < tower.length; i++) { //to remove duplicates every value that is after the final entry is set to null
                 tower[i] = null;
             }
-            aSetter.j = value;
+            aSetter.j = value; //the entry value of the separate class is then updated with the first non-null entry number of the array
         }
     }
 
@@ -400,12 +400,12 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
                 }
             }
 
-            for (int i = 0; i < projectileList.size(); i++) {
-                if(projectileList.get(i) != null) {
-                    if(projectileList.get(i).alive){
-                        projectileList.get(i).update();
-                    }if(!projectileList.get(i).alive){
-                        projectileList.remove(i);
+            for (int i = 0; i < projectileList.size(); i++) { //loops for size of arraylist
+                if(projectileList.get(i) != null) { //null check, it shouldn't be possible for a null entry, but to protect from crashes it is included
+                    if(projectileList.get(i).alive){ //if the projectile is still alive it will update
+                        projectileList.get(i).update(); //update command for projectile, check if collided with enemy, if not updates position
+                    }if(!projectileList.get(i).alive){ //if the projectiles' lifetime expires
+                        projectileList.remove(i); //the projectile is removed
                     }
 
                 }

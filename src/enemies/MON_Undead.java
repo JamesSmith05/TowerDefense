@@ -22,7 +22,7 @@ public class MON_Undead extends Entity {
         maxLife = 30;
         life = maxLife;
         attack = 5;
-        defence = 0;
+        defence = 2;
         exp = 2;
         coin = 10;
 

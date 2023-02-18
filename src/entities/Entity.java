@@ -15,9 +15,7 @@ public class Entity {
     public BufferedImage fup1,fup2,fdown1,fdown2,fleft1,fleft2,fright1,fright2;
     public BufferedImage image;
     public Rectangle solidArea = new Rectangle(0, 0, 0,0);
-    public Rectangle solidAreaDirectionChanger = new Rectangle(0, 0, 6, 6);    // change around for different tile sizes
     public int solidAreaDefaultX, solidAreaDefaultY;
-    public int solidAreaDefaultDirectionX, solidAreaDefaultDirectionY;
 
     public boolean collision = false;
 
@@ -96,10 +94,6 @@ public class Entity {
         this.gp = gp;
         solidArea.width = gp.tileSize;
         solidArea.height = gp.tileSize;
-        solidAreaDirectionChanger.x = (gp.tileSize/2) - 3;
-        solidAreaDirectionChanger.y = (gp.tileSize/2) - 3;
-        solidAreaDefaultDirectionX = solidAreaDirectionChanger.x;
-        solidAreaDefaultDirectionY = solidAreaDirectionChanger.y;
     }
 
     public void setAction(){}

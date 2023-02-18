@@ -120,7 +120,7 @@ public class PathFinder {
             currentNode.checked = true;
             openList.remove(currentNode);
 
-            //opens the nodes in the 4 cardinal directions if there are withing the bounds
+            //opens the nodes in the 4 cardinal directions if they are withing the bounds of the map
             if(row - 1 >= 0){
                 openNode(node[col][row-1]);
             }
@@ -137,11 +137,11 @@ public class PathFinder {
             int bestNodeIndex = 0; //set default values
             int bestNodefCost = 999; //set default values
 
-            for (int i = 0; i < openList.size(); i++) {
+            for (int i = 0; i < openList.size(); i++) { //loops through all open nodes
 
                 if(openList.get(i).fCost < bestNodefCost){
                     bestNodeIndex = i; // if new node is closer to goal then replace the best node index
-                    bestNodefCost = openList.get(i).fCost;
+                    bestNodefCost = openList.get(i).fCost; //and update the fCost
                 }
                 else if(openList.get(i).fCost == bestNodefCost) {
                     if (openList.get(i).gCost < openList.get(bestNodeIndex).gCost) { //if the fCost is the same then check the gCost
@@ -149,18 +149,17 @@ public class PathFinder {
                     }
                 }
             }
-            if(openList.size() == 0){
+            if(openList.size() == 0){ //if there are no open nodes it will break to avoid crashing, though that should not be possible the way i use the pathfinding
                 break;
             }
             currentNode = openList.get(bestNodeIndex); //set new current node to the closest found node
-            if(currentNode == goalNode){
+            if(currentNode == goalNode){ //if the goal has been reached then the flag is triggered and the function to return the path is returned
                 goalReached = true;
-                trackThePath();
+                trackThePath(); //works from the goal node and traverses the graph backwards through the parent nodes until it reaches the start node
             }
-            step++;
+            step++; //increments step
         }
-
-        return goalReached;
+        return goalReached; //returns true if a path is found
     }
 
     //set node to open
@@ -175,7 +174,7 @@ public class PathFinder {
     //map the path out
     public void trackThePath(){
         Node current = goalNode;
-        while (current != startNode){
+        while (current != startNode){ //until it reaches the start it loops
 
             pathList.add(0,current); //adds current node and
             current = current.parent; //regresses to its parent node essentially following the breadcrumb trail back to the start
