@@ -66,7 +66,7 @@ public class MON_Undead extends Entity {
             canSpawn = true;
         }
         if (actionLockCounter>200){
-            gp.aSetter.setSpecificEnemy("Helmet",this.worldX,this.worldY);
+            gp.aSetter.setSpecificEnemy("Helmet",this.worldX,this.worldY,distanceTraveled);
             actionLockCounter = 100;
         }
     }
@@ -74,7 +74,7 @@ public class MON_Undead extends Entity {
     public void damageReaction(){
         if(canSpawn){
             actionLockCounter = 0;
-            gp.aSetter.setSpecificEnemy("Helmet",this.worldX,this.worldY);
+            gp.aSetter.setSpecificEnemy("Helmet",this.worldX,this.worldY,distanceTraveled);
             canSpawn = false;
         }
     }

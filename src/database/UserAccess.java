@@ -111,7 +111,10 @@ public class UserAccess {
                     ""
             );
 
-            if (password.equals(password2)) { //check passwords are the same
+            if(!RegexValidator.isValidUsername(password)){
+                JOptionPane.showMessageDialog(null, "Password cannot be blank, or include spaces", "Sign Up", JOptionPane.WARNING_MESSAGE);
+            }
+            else if (password.equals(password2)) { //check passwords are the same
                 if (db.createUser(username,password)) {
                     JOptionPane.showMessageDialog(null, "Account created successfully!\nUsername: " + username, "Sign Up", JOptionPane.PLAIN_MESSAGE);
                     check = false;

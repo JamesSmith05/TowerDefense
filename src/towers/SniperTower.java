@@ -52,9 +52,6 @@ public class SniperTower extends Tower {
 
     public void setAction() {
 
-//        if (shotAvailableCounter < 20) {
-//            shotAvailableCounter++;
-//        }
     }
     public void setUpgrade1A(){
         attack += 1;

@@ -225,11 +225,12 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
     public void setupGame(){
         //reset all game variables and arrays and send user to title screen
         resetEntities();
+        stopMusic();
         aSetter.resetMobCounter();
         aSetter.resetTowerCounter();
         aSetter.setTowerOptions();
         userLife = 50;
-        userCurrency = 50;
+        userCurrency = 1000;
         waveNum = 0;
         playMusic(0);
         gameState = titleState;
@@ -291,6 +292,8 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
 
     public void loadGameSave(int gameToLoad){ //load a game
         dba.loadGameData(gameToLoad,this);
+        waveNum --;
+        aSetter.k = 10000;
     }
 
     public void checkForTowerOverflow(){

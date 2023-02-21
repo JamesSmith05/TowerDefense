@@ -98,6 +98,8 @@ public class UI {
 
         }
         if(gp.gameState == gp.pauseState){
+            drawUserInfo();
+            drawTowerImages();
             drawPauseScreen();
         }
         if(gp.gameState == gp.dialogueState){

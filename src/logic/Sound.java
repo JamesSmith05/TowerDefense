@@ -54,8 +54,13 @@ public class Sound {
         }
 
     }
-    public void stop(){
-        clip.stop();
-    }
+    public void stop() {
 
+        try {
+            clip.stop();
+
+        }catch (Exception e) {
+
+        }
+    }
 }

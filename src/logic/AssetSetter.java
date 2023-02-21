@@ -86,7 +86,7 @@ public class AssetSetter {
         }
     }
 
-    public void setSpecificEnemy(String name,int x, int y){
+    public void setSpecificEnemy(String name,int x, int y, int distance){
         switch (name){
             case "Helmet":
                 gp.monster[enemyId] = new MON_Helmet(gp);
@@ -98,6 +98,7 @@ public class AssetSetter {
 
         gp.monster[enemyId].worldX = x;
         gp.monster[enemyId].worldY = y;
+        gp.monster[enemyId].distanceTraveled = distance;
 
         enemyId++;
     }
