@@ -98,6 +98,7 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
     public int userLife;
     public int userCurrency;
     public int waveNum;
+    int waveController = 15;
     public int startCol, startRow;
     public int goalCol, goalRow;
 
@@ -356,9 +357,11 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
                 selectedTowerIndex = 50;
             }
             spawnerCounter++;
-            Random rand = new Random();
-            if (spawnerCounter > rand.nextInt(25)+10) {
+
+            if (spawnerCounter > waveController) {
                 aSetter.waveSpawner(waveNum);
+                Random rand = new Random();
+                waveController = rand.nextInt(25)+20;
                 spawnerCounter = 0;
                 if(keyH.spacePressed){
                     if(!aSetter.waveLock){
@@ -399,6 +402,7 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
                 if(projectileList.get(i) != null) { //null check, it shouldn't be possible for a null entry, but to protect from crashes it is included
                     if(projectileList.get(i).alive){ //if the projectile is still alive it will update
                         projectileList.get(i).update(); //update command for projectile, check if collided with enemy, if not updates position
+                        //projectileList.get(i).update(); //update twice because of halved fps
                     }if(!projectileList.get(i).alive){ //if the projectiles' lifetime expires
                         projectileList.remove(i); //the projectile is removed
                     }
