@@ -230,7 +230,7 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
         aSetter.resetTowerCounter();
         aSetter.setTowerOptions();
         userLife = 50;
-        userCurrency = 1000;
+        userCurrency = 100;
         waveNum = 0;
         playMusic(0);
         gameState = titleState;
@@ -316,20 +316,12 @@ public class GamePanel extends JPanel implements Runnable, ActionListener {
 
     public void update() {
 
-        //get information bout the frame and its location
-        frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        Point mousePos = getMousePosition();
+        if (mousePos != null) {
+            mouseX = mousePos.x;
+            mouseY = mousePos.y;
 
-        int tempX = frame.getLocation().x;
-        int tempY = frame.getLocation().y;
-        int tempMouseX = MouseInfo.getPointerInfo().getLocation().x;
-        int tempMouseY = MouseInfo.getPointerInfo().getLocation().y;
-
-//        mouseX = tempMouseX - tempX - 10;  //these values are used for a 4k monitor
-//        mouseY = tempMouseY - tempY - 45;  //these values are used for a 4k monitor
-
-        //to try and put the coordinates to the tip of the mouse button
-        mouseX = tempMouseX - tempX -5;
-        mouseY = tempMouseY - tempY - 22;
+        }
 
         if(gameState == playState){
 
